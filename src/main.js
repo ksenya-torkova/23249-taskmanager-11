@@ -2,7 +2,7 @@
 
 const TASK_COUNT = 3;
 const siteMain = document.querySelector(`.main`);
-const siteHeader= siteMain.querySelector(`.main__control`);
+const siteHeader = siteMain.querySelector(`.main__control`);
 
 const render = (container, template, place = `beforeend`) => {
   container.insertAdjacentHTML(place, template);
