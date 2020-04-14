@@ -1,4 +1,5 @@
-const FILTER_TYPES = [`all`, `overdue`, `today`, `favorites`, `repeating`, `tags`, `archive`];
+import {FILTER_TYPES} from './../const.js';
+
 const FILTERS_MAX_AMOUNT = 10;
 
 const generateFilters = () => {
