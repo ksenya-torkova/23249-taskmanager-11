@@ -18,12 +18,12 @@ const TASK_DESCRIPTIONS = [
 
 const WEEK_DAYS_AMOUNT = 7;
 
-const getRandomInteger = (min, max) => {
+const getRandomInteger = (max, min = 0) => {
   return Math.floor(min + Math.random() * (max + 1 - min));
 };
 
 const getRandomArrayItem = (arr) => {
-  const randomIndex = getRandomInteger(0, arr.length - 1);
+  const randomIndex = getRandomInteger(arr.length - 1);
 
   return arr[randomIndex];
 };
@@ -31,7 +31,7 @@ const getRandomArrayItem = (arr) => {
 const getRandomDate = () => {
   const targetDate = new Date();
   const sign = Math.random() > 0.5 ? 1 : -1;
-  const diffValue = sign * getRandomInteger(0, WEEK_DAYS_AMOUNT);
+  const diffValue = sign * getRandomInteger(WEEK_DAYS_AMOUNT);
 
   targetDate.setDate(targetDate.getDate() + diffValue);
 
