@@ -3,7 +3,7 @@ import SiteMenuComponent from './components/site-menu.js';
 import TaskListComponent from './components/task-list.js';
 // import TaskEditComponent from './components/task-edit.js';
 // import LoadMoreComponent from './components/load-more.js';
-// import NoTaskComponent from './components/no-tasks.js';
+import NoTaskComponent from './components/no-tasks.js';
 import FilterComponent from './components/filter.js';
 import BoardComponent from './components/board.js';
 import TaskComponent from './components/task.js';
@@ -46,6 +46,13 @@ const renderTask = (tasksContainer, task) => {
 };
 
 const renderBoard = (tasks, boardComponent) => {
+  const isAllTasksArchived = tasks.every((task) => task.isArchive);
+
+  if (isAllTasksArchived || tasks.length === 0) {
+    render(boardComponent.getElement(), new NoTaskComponent().getElement());
+    return;
+  }
+
   const taskListComponent = new TaskListComponent().getElement();
 
   render(boardComponent.getElement(), new SortComponent().getElement());
