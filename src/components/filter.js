@@ -1,5 +1,9 @@
-const createFilterMarkup = (filter, isChecked) => {
+import {createElement} from './../utils.js';
+
+const createFilterMarkup = (filter, checked) => {
   const {name, count} = filter;
+  const isDisabled = count === 0 ? `disabled` : ``;
+  const isChecked = checked ? `checked` : ``;
 
   return (
     `<input
@@ -7,8 +11,8 @@ const createFilterMarkup = (filter, isChecked) => {
       id="filter__${name}"
       class="filter__input visually-hidden"
       name="filter"
-      ${count === 0 ? `disabled` : ``}
-      ${isChecked ? `checked` : ``}
+      ${isDisabled}
+      ${isChecked}
     />
     <label for="filter__${name}" class="filter__label">
       ${name}
@@ -32,4 +36,25 @@ const createFilterTemplate = (filters) => {
   );
 };
 
-export {createFilterTemplate};
+export default class Filter {
+  constructor(filters) {
+    this._filters = filters;
+    this._element = null;
+  }
+
+  getTemplate() {
+    return createFilterTemplate(this._filters);
+  }
+
+  getElement() {
+    if (!this._element) {
+      this._element = createElement(this.getTemplate());
+    }
+
+    return this._element;
+  }
+
+  removeElement() {
+    this._element = null;
+  }
+}
