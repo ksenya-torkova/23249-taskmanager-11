@@ -2,7 +2,7 @@ import {checkEscKey, render} from './utils.js';
 import SiteMenuComponent from './components/site-menu.js';
 import TaskListComponent from './components/task-list.js';
 import TaskEditComponent from './components/task-edit.js';
-// import LoadMoreComponent from './components/load-more.js';
+import LoadMoreComponent from './components/load-more.js';
 import NoTaskComponent from './components/no-tasks.js';
 import FilterComponent from './components/filter.js';
 import BoardComponent from './components/board.js';
@@ -13,7 +13,7 @@ import {generateTasksList} from './mock/task-mock.js';
 
 const TASK_COUNT = 20;
 const DEFAULT_TASKS_AMOUNT = 8;
-// const DOWNLOADED_TASKS_AMOUNT = 8;
+const DOWNLOADED_TASKS_AMOUNT = 8;
 
 const siteMain = document.querySelector(`.main`);
 const siteHeader = siteMain.querySelector(`.main__control`);
@@ -21,22 +21,6 @@ const filters = generateFilters();
 
 render(siteHeader, new SiteMenuComponent().getElement());
 render(siteMain, new FilterComponent(filters).getElement());
-
-// const loadMoreButton = board.querySelector(`.load-more`);
-
-// loadMoreButton.addEventListener(`click`, () => {
-//   const previousTasksAmount = showingTasksAmount;
-//   showingTasksAmount += DOWNLOADED_TASKS_AMOUNT;
-
-//   tasks.slice(previousTasksAmount, showingTasksAmount)
-//     .forEach((task) => {
-//       render(taskList, createTaskTemplate(task));
-//     });
-
-//   if (showingTasksAmount >= tasks.length) {
-//     loadMoreButton.remove();
-//   }
-// });
 
 const renderTask = (tasksContainer, task) => {
   const taskComponent = new TaskComponent(task);
@@ -100,6 +84,25 @@ const renderBoard = (tasks, boardComponent) => {
     .forEach((task) => {
       renderTask(taskListComponent, task);
     });
+
+  const loadMoreComponent = new LoadMoreComponent();
+
+  render(boardComponent.getElement(), loadMoreComponent.getElement());
+
+  loadMoreComponent.getElement().addEventListener(`click`, () => {
+    const previousTasksAmount = showingTasksAmount;
+    showingTasksAmount += DOWNLOADED_TASKS_AMOUNT;
+
+    tasks.slice(previousTasksAmount, showingTasksAmount)
+      .forEach((task) => {
+        renderTask(taskListComponent, task);
+      });
+
+    if (showingTasksAmount >= tasks.length) {
+      loadMoreComponent.getElement().remove();
+      loadMoreComponent.removeElement();
+    }
+  });
 };
 
 const tasks = generateTasksList(TASK_COUNT);
