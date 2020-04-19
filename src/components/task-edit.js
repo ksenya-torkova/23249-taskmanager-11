@@ -78,8 +78,7 @@ const createTaskEditTemplate = (task) => {
               <textarea
                 class="card__text"
                 placeholder="Start typing your text here..."
-                name="text">
-                ${description}
+                name="text">${description}
               </textarea>
             </label>
           </div>
@@ -147,6 +146,8 @@ export default class TaskEdit {
     if (!this._element) {
       this._element = createElement(this.getTemplate());
     }
+
+    return this._element;
   }
 
   removeElement() {

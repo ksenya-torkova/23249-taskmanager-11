@@ -1,7 +1,7 @@
-import {render} from './utils.js';
+import {checkEscKey, render} from './utils.js';
 import SiteMenuComponent from './components/site-menu.js';
 import TaskListComponent from './components/task-list.js';
-// import TaskEditComponent from './components/task-edit.js';
+import TaskEditComponent from './components/task-edit.js';
 // import LoadMoreComponent from './components/load-more.js';
 import NoTaskComponent from './components/no-tasks.js';
 import FilterComponent from './components/filter.js';
@@ -40,7 +40,43 @@ render(siteMain, new FilterComponent(filters).getElement());
 
 const renderTask = (tasksContainer, task) => {
   const taskComponent = new TaskComponent(task);
-  // const taskEditComponent = new TaskEditComponent(task);
+  const taskEditComponent = new TaskEditComponent(task);
+
+  const replaceTaskToEdit = () => {
+    tasksContainer.replaceChild(taskEditComponent.getElement(), taskComponent.getElement());
+  };
+
+  const replaceEditToTask = () => {
+    tasksContainer.replaceChild(taskComponent.getElement(), taskEditComponent.getElement());
+  };
+
+  const onEscKeyDown = (evt) => {
+    const isEscKey = checkEscKey(evt);
+
+    if (isEscKey) {
+      replaceEditToTask();
+      document.removeEventListener(`keydown`, onEscKeyDown);
+    }
+  };
+
+  const editBtn = taskComponent.getElement().querySelector(`.card__btn--edit`);
+
+  if (editBtn) {
+    editBtn.addEventListener(`click`, () => {
+      replaceTaskToEdit();
+      document.addEventListener(`keydown`, onEscKeyDown);
+    });
+  }
+
+  const editForm = taskEditComponent.getElement().querySelector(`.card__form`);
+
+  if (editForm) {
+    editForm.addEventListener(`submit`, (evt) => {
+      evt.preventDefault();
+      replaceEditToTask();
+      document.removeEventListener(`keydown`, onEscKeyDown);
+    });
+  }
 
   render(tasksContainer, taskComponent.getElement());
 };
