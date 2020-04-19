@@ -39,4 +39,8 @@ const formatTime = (date) => {
   return `${hours}:${minutes} ${interval}`;
 };
 
-export {formatTime, createElement, render};
+const checkEscKey = (evt) => {
+  return evt.key === `Escape` || evt.key === `Esc`;
+};
+
+export {checkEscKey, createElement, formatTime, render};
