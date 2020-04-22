@@ -1,5 +1,5 @@
 import {MONTHS} from './../const.js';
-import {formatTime} from './../utils.js';
+import {formatTime} from './../utils/common.js';
 import AbstractComponent from './abstract-component.js';
 
 const createTaskTemplate = (task) => {
