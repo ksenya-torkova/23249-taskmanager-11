@@ -44,24 +44,16 @@ const renderTask = (tasksContainer, task) => {
     }
   };
 
-  const editBtn = taskComponent.getElement().querySelector(`.card__btn--edit`);
+  taskComponent.setEditButtonClickHandler(() => {
+    replaceTaskToEdit();
+    document.addEventListener(`keydown`, onEscKeyDown);
+  });
 
-  if (editBtn) {
-    editBtn.addEventListener(`click`, () => {
-      replaceTaskToEdit();
-      document.addEventListener(`keydown`, onEscKeyDown);
-    });
-  }
-
-  const editForm = taskEditComponent.getElement().querySelector(`.card__form`);
-
-  if (editForm) {
-    editForm.addEventListener(`submit`, (evt) => {
-      evt.preventDefault();
-      replaceEditToTask();
-      document.removeEventListener(`keydown`, onEscKeyDown);
-    });
-  }
+  taskEditComponent.setSubmitHandler((evt) => {
+    evt.preventDefault();
+    replaceEditToTask();
+    document.removeEventListener(`keydown`, onEscKeyDown);
+  });
 
   render(tasksContainer, taskComponent);
 };
@@ -90,7 +82,7 @@ const renderBoard = (tasks, boardComponent) => {
 
   render(boardComponent.getElement(), loadMoreComponent);
 
-  loadMoreComponent.getElement().addEventListener(`click`, () => {
+  loadMoreComponent.setClickHandler(() => {
     const previousTasksAmount = showingTasksAmount;
     showingTasksAmount += DOWNLOADED_TASKS_AMOUNT;
 
