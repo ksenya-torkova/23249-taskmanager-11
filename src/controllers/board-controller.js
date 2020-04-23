@@ -1,3 +1,4 @@
+import {SortType} from './../const.js';
 import {checkEscKey} from './../utils/common.js';
 import {remove, render, replace} from './../utils/render.js';
 import TaskListComponent from './../components/task-list.js';
@@ -45,6 +46,31 @@ const renderTask = (tasksContainer, task) => {
   render(tasksContainer, taskComponent);
 };
 
+const renderTasksList = (tasksContainer, tasks) => {
+  tasks.forEach((task) => {
+    renderTask(tasksContainer, task);
+  });
+};
+
+const getSortedTasks = (tasks, sortType, from = 0, to = DEFAULT_TASKS_AMOUNT) => {
+  let sortedTasks = [];
+  const showingTasks = tasks.slice();
+
+  switch (sortType) {
+    case SortType.DATE_UP:
+      sortedTasks = showingTasks.sort((a, b) => a.dueDate - b.dueDate);
+      break;
+    case SortType.DATE_DOWN:
+      sortedTasks = showingTasks.sort((a, b) => b.dueDate - a.dueDate);
+      break;
+    case SortType.DEFAULT:
+      sortedTasks = showingTasks;
+      break;
+  }
+
+  return sortedTasks.slice(from, to);
+};
+
 export default class BoardController {
   constructor(container) {
     this._container = container;
@@ -62,34 +88,42 @@ export default class BoardController {
       return;
     }
 
-    const taskListComponent = this._taskListComponent;
+    const renderLoadMoreButton = () => {
+      render(this._container.getElement(), this._loadMoreComponent);
+
+      this._loadMoreComponent.setClickHandler(() => {
+        const previousTasksAmount = showingTasksAmount;
+        showingTasksAmount += DOWNLOADED_TASKS_AMOUNT;
+
+        const sortedTasks = getSortedTasks(tasks, this._sortComponent.getSortType(), previousTasksAmount, showingTasksAmount);
+
+        renderTasksList(this._taskListComponent.getElement(), sortedTasks);
+
+        if (showingTasksAmount >= tasks.length) {
+          remove(this._loadMoreComponent);
+        }
+      });
+    };
 
     render(this._container.getElement(), this._sortComponent);
-    render(this._container.getElement(), taskListComponent);
+    render(this._container.getElement(), this._taskListComponent);
 
     let showingTasksAmount = DEFAULT_TASKS_AMOUNT;
 
-    tasks.slice(0, showingTasksAmount)
-      .forEach((task) => {
-        renderTask(taskListComponent.getElement(), task);
-      });
+    renderTasksList(this._taskListComponent.getElement(), tasks.slice(0, showingTasksAmount));
 
-    const loadMoreComponent = this._loadMoreComponent;
+    renderLoadMoreButton();
 
-    render(this._container.getElement(), loadMoreComponent);
+    this._sortComponent.setSortTypeChangeHandler((sortType) => {
+      showingTasksAmount = DEFAULT_TASKS_AMOUNT;
 
-    loadMoreComponent.setClickHandler(() => {
-      const previousTasksAmount = showingTasksAmount;
-      showingTasksAmount += DOWNLOADED_TASKS_AMOUNT;
+      const sortedTasks = getSortedTasks(tasks, sortType);
 
-      tasks.slice(previousTasksAmount, showingTasksAmount)
-        .forEach((task) => {
-          renderTask(taskListComponent.getElement(), task);
-        });
+      this._taskListComponent.getElement().innerHTML = ``;
 
-      if (showingTasksAmount >= tasks.length) {
-        remove(loadMoreComponent);
-      }
+      renderTasksList(this._taskListComponent.getElement(), sortedTasks);
+
+      renderLoadMoreButton();
     });
   }
 }

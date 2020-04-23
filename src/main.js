@@ -16,11 +16,9 @@ const filters = generateFilters();
 render(siteHeader, new SiteMenuComponent());
 render(siteMain, new FilterComponent(filters));
 
-
 const tasks = generateTasksList(TASK_COUNT);
 const boardComponent = new BoardComponent();
 const boardController = new BoardController(boardComponent);
 
 render(siteMain, boardComponent);
 boardController.render(tasks);
-
