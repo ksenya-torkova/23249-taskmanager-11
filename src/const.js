@@ -41,4 +41,14 @@ const MONTHS = [
   `December`,
 ];
 
-export {COLORS, DAYS_OF_WEEK, FILTER_TYPES, MONTHS};
+const SortType = {
+  DATE_DOWN: `date-down`,
+  DATE_UP: `date-up`,
+  DEFAULT: `default`,
+};
+
+const Tag = {
+  LINK: `A`
+};
+
+export {COLORS, DAYS_OF_WEEK, FILTER_TYPES, MONTHS, SortType, Tag};
