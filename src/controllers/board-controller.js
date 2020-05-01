@@ -1,50 +1,12 @@
 import {SortType} from './../const.js';
-import {checkEscKey} from './../utils/common.js';
-import {remove, render, replace} from './../utils/render.js';
+import {remove, render} from './../utils/render.js';
 import TaskListComponent from './../components/task-list.js';
-import TaskEditComponent from './../components/task-edit.js';
 import LoadMoreComponent from './../components/load-more.js';
 import NoTaskComponent from './../components/no-tasks.js';
-import TaskComponent from './../components/task.js';
 import SortComponent from './../components/sort.js';
 
 const DEFAULT_TASKS_AMOUNT = 8;
 const DOWNLOADED_TASKS_AMOUNT = 8;
-
-const renderTask = (tasksContainer, task) => {
-  const taskComponent = new TaskComponent(task);
-  const taskEditComponent = new TaskEditComponent(task);
-
-  const replaceTaskToEdit = () => {
-    replace(taskEditComponent, taskComponent);
-  };
-
-  const replaceEditToTask = () => {
-    replace(taskComponent, taskEditComponent);
-  };
-
-  const onEscKeyDown = (evt) => {
-    const isEscKey = checkEscKey(evt);
-
-    if (isEscKey) {
-      replaceEditToTask();
-      document.removeEventListener(`keydown`, onEscKeyDown);
-    }
-  };
-
-  taskComponent.setEditButtonClickHandler(() => {
-    replaceTaskToEdit();
-    document.addEventListener(`keydown`, onEscKeyDown);
-  });
-
-  taskEditComponent.setSubmitHandler((evt) => {
-    evt.preventDefault();
-    replaceEditToTask();
-    document.removeEventListener(`keydown`, onEscKeyDown);
-  });
-
-  render(tasksContainer, taskComponent);
-};
 
 const renderTasksList = (tasksContainer, tasks) => {
   tasks.forEach((task) => {
