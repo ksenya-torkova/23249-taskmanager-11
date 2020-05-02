@@ -1,4 +1,3 @@
-
 import {render} from './utils/render.js';
 import SiteMenuComponent from './components/site-menu.js';
 import FilterComponent from './components/filter.js';
