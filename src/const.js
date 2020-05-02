@@ -26,21 +26,6 @@ const FILTER_TYPES = [
   `archive`,
 ];
 
-const MONTHS = [
-  `January`,
-  `February`,
-  `March`,
-  `April`,
-  `May`,
-  `June`,
-  `July`,
-  `August`,
-  `September`,
-  `October`,
-  `November`,
-  `December`,
-];
-
 const SortType = {
   DATE_DOWN: `date-down`,
   DATE_UP: `date-up`,
@@ -51,4 +36,4 @@ const Tag = {
   LINK: `A`
 };
 
-export {COLORS, DAYS_OF_WEEK, FILTER_TYPES, MONTHS, SortType, Tag};
+export {COLORS, DAYS_OF_WEEK, FILTER_TYPES, SortType, Tag};

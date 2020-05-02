@@ -1,6 +1,9 @@
-import {COLORS, DAYS_OF_WEEK, MONTHS} from './../const.js';
-import {formatTime} from './../utils/common.js';
+import {COLORS, DAYS_OF_WEEK} from './../const.js';
+import {formatDate, formatTime} from './../utils/common.js';
 import AbstractSmartComponent from './abstract-smart-component.js';
+import flatpickr from "flatpickr";
+
+import "flatpickr/dist/flatpickr.min.css";
 
 const createDaysTemplate = (days, repeatingDays) => {
   return days
@@ -56,7 +59,7 @@ const createTaskEditTemplate = (task, options = {}) => {
 
   const isExpired = dueDate instanceof Date && dueDate < Date.now();
   const deadlineClass = isExpired ? `card--deadline` : ``;
-  const date = (isDateShowing && dueDate) ? `${dueDate.getDate()} ${MONTHS[dueDate.getMonth()]}` : ``;
+  const date = (isDateShowing && dueDate) ? formatDate(dueDate) : ``;
   const time = (isDateShowing && dueDate) ? formatTime(dueDate) : ``;
   const deadlineStatus = isDateShowing ? `yes` : `no`;
   const repeatClass = isRepeatingTask ? `card--repeat` : ``;
@@ -80,8 +83,7 @@ const createTaskEditTemplate = (task, options = {}) => {
               <textarea
                 class="card__text"
                 placeholder="Start typing your text here..."
-                name="text">${description}
-              </textarea>
+                name="text">${description}</textarea>
             </label>
           </div>
 
@@ -142,7 +144,26 @@ export default class TaskEdit extends AbstractSmartComponent {
     this._isRepeatingTask = Object.values(task.repeatingDays).some(Boolean);
     this._activeRepeatingDays = Object.assign({}, task.repeatDays);
     this._submitHandler = null;
+    this._flatpickr = null;
     this._subscribeOnEvents();
+    this._applyFlapickr();
+  }
+
+  _applyFlapickr() {
+    if (this._flatpickr) {
+      this._flatpickr.destroy();
+      this._flatpickr = null;
+    }
+
+    if (this._isDateShowing) {
+      const dateElement = this.getElement().querySelector(`.card__date`);
+
+      this._flatpickr = flatpickr(dateElement, {
+        altInput: true,
+        allowInput: true,
+        defaultDate: this._task.dueDate || `today`,
+      });
+    }
   }
 
   getTemplate() {
@@ -160,6 +181,7 @@ export default class TaskEdit extends AbstractSmartComponent {
 
   rerender() {
     super.rerender();
+    this._applyFlapickr();
   }
 
   reset() {
