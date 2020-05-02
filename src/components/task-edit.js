@@ -55,7 +55,7 @@ const createTaskEditTemplate = (task, options = {}) => {
   const {isDateShowing, isRepeatingTask, activeRepeatingDays} = options;
 
   const isExpired = dueDate instanceof Date && dueDate < Date.now();
-  const deadlineClass = isExpired ? `card--deadline` : ``
+  const deadlineClass = isExpired ? `card--deadline` : ``;
   const date = (isDateShowing && dueDate) ? `${dueDate.getDate()} ${MONTHS[dueDate.getMonth()]}` : ``;
   const time = (isDateShowing && dueDate) ? formatTime(dueDate) : ``;
   const deadlineStatus = isDateShowing ? `yes` : `no`;
