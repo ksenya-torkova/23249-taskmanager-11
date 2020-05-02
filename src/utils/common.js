@@ -1,19 +1,15 @@
-const TIME_FORMAT_DIVIDER = 10;
-const HOURS_AMOUNT = 24;
-
-const chooseTimeFormat = (value) => {
-  return value < TIME_FORMAT_DIVIDER ? `0${value}` : String(value);
-};
+import moment from 'moment';
 
 const formatTime = (date) => {
-  const hours = chooseTimeFormat(date.getHours() % HOURS_AMOUNT);
-  const minutes = chooseTimeFormat(date.getMinutes());
+  return moment(date).format(`hh:mm`);
+};
 
-  return `${hours}:${minutes}`;
+const formatDate = (date) => {
+  return moment(date).format(`DD MMMM`);
 };
 
 const checkEscKey = (evt) => {
   return evt.key === `Escape` || evt.key === `Esc`;
 };
 
-export {checkEscKey, formatTime};
+export {checkEscKey, formatDate, formatTime};
