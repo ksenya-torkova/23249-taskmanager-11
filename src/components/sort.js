@@ -1,4 +1,4 @@
-import {SortType, Tag} from './../const.js';
+import {SortType, Tag} from './../utils/const.js';
 import AbstractComponent from './abstract-component.js';
 
 const createSortTemplate = () => {

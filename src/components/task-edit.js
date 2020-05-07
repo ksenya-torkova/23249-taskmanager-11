@@ -1,4 +1,4 @@
-import {COLORS, DAYS_OF_WEEK} from './../const.js';
+import {COLORS, DAYS_OF_WEEK} from './../utils/const.js';
 import {formatDate, formatTime} from './../utils/common.js';
 import AbstractSmartComponent from './abstract-smart-component.js';
 import flatpickr from "flatpickr";

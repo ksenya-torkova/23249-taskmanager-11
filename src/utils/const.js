@@ -16,15 +16,14 @@ const DAYS_OF_WEEK = [
   `su`,
 ];
 
-const FILTER_TYPES = [
-  `all`,
-  `overdue`,
-  `today`,
-  `favorites`,
-  `repeating`,
-  `tags`,
-  `archive`,
-];
+const FilterType = {
+  ALL: `all`,
+  ARCHIVE: `archive`,
+  FAVORITES: `favorites`,
+  OVERDUE: `overdue`,
+  REPEATING: `repeating`,
+  TODAY: `today`,
+};
 
 const SortType = {
   DATE_DOWN: `date-down`,
@@ -36,4 +35,4 @@ const Tag = {
   LINK: `A`
 };
 
-export {COLORS, DAYS_OF_WEEK, FILTER_TYPES, SortType, Tag};
+export {COLORS, DAYS_OF_WEEK, FilterType, SortType, Tag};
