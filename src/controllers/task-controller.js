@@ -1,11 +1,30 @@
+import {checkEscKey} from './../utils/common.js';
+import {COLOR} from './../utils/const.js';
+import {render, RenderPosition, replace, remove} from './../utils/render.js';
 import TaskComponent from './../components/task.js';
 import TaskEditComponent from './../components/task-edit.js';
-import {render, replace, remove} from './../utils/render.js';
-import {checkEscKey} from './../utils/common.js';
 
 const Mode = {
+  ADD: `add`,
   DEFAULT: `default`,
   EDIT: `edit`,
+};
+
+const emptyTask = {
+  description: ``,
+  dueDate: null,
+  repeatingDays: {
+    "mo": false,
+    "tu": false,
+    "we": false,
+    "th": false,
+    "fr": false,
+    "sa": false,
+    "su": false,
+  },
+  color: COLOR.BLACK,
+  isFavorite: false,
+  isArchive: false,
 };
 
 export default class TaskController {
@@ -36,6 +55,10 @@ export default class TaskController {
     const isEscKey = checkEscKey(evt);
 
     if (isEscKey) {
+      if (this._mode === Mode.ADD) {
+        this._onDataChange(this, emptyTask, null);
+      }
+
       this._replaceEditToTask();
       document.removeEventListener(`keydown`, this._onEscKeyDown);
     }
@@ -48,10 +71,10 @@ export default class TaskController {
     document.removeEventListener(`keydown`, this._onEscKeyDown);
   }
 
-  render(task) {
+  render(task, mode) {
+    this._mode = mode;
     const oldTaskComponent = this._taskComponent;
     const oldTaskEditComponent = this._taskEditComponent;
-
     this._taskComponent = new TaskComponent(task);
     this._taskEditComponent = new TaskEditComponent(task);
 
@@ -78,11 +101,30 @@ export default class TaskController {
       document.removeEventListener(`keydown`, this._onEscKeyDown);
     });
 
-    if (oldTaskEditComponent && oldTaskComponent) {
-      replace(this._taskComponent, oldTaskComponent);
-      replace(this._taskEditComponent, oldTaskEditComponent);
-    } else {
-      render(this._container, this._taskComponent);
+    this._taskEditComponent.setDeleteButtonClickHandler(() => {
+      this._onDataChange(this, task, null);
+    });
+
+    switch (mode) {
+      case Mode.DEFAULT:
+        if (oldTaskEditComponent && oldTaskComponent) {
+          replace(this._taskComponent, oldTaskComponent);
+          replace(this._taskEditComponent, oldTaskEditComponent);
+          this._replaceEditToTask();
+        } else {
+          render(this._container, this._taskComponent);
+        }
+        break;
+
+      case Mode.ADD:
+        if (oldTaskEditComponent && oldTaskComponent) {
+          remove(oldTaskComponent);
+          remove(oldTaskEditComponent);
+        }
+
+        document.addEventListener(`keydown`, this._onEscKeyDown);
+        render(this._container, this._taskEditComponent, RenderPosition.AFTER_BEGIN);
+        break;
     }
   }
 
@@ -92,3 +134,5 @@ export default class TaskController {
     }
   }
 }
+
+export {emptyTask, Mode};

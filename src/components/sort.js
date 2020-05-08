@@ -29,7 +29,7 @@ export default class Sort extends AbstractComponent {
     this.getElement().addEventListener(`click`, (evt) => {
       evt.preventDefault();
 
-      if (evt.target.tagName !== Tag.LINK) {
+      if (evt.target.tagName !== Tag.LINK.toLocaleUpperCase()) {
         return;
       }
 

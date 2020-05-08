@@ -34,7 +34,8 @@ const SortType = {
 };
 
 const Tag = {
-  LINK: `A`
+  LINK: `a`,
+  INPUT: `input`
 };
 
-export {COLORS, DAYS_OF_WEEK, FilterType, SortType, Tag};
+export {COLOR, COLORS, DAYS_OF_WEEK, FilterType, SortType, Tag};

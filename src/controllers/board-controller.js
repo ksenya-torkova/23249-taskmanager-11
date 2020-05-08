@@ -4,7 +4,7 @@ import TaskListComponent from './../components/task-list.js';
 import LoadMoreComponent from './../components/load-more.js';
 import NoTaskComponent from './../components/no-tasks.js';
 import SortComponent from './../components/sort.js';
-import TaskController from './task-controller.js';
+import TaskController, {emptyTask, Mode as TaskControllerMode} from './task-controller.js';
 
 const DEFAULT_TASKS_AMOUNT = 8;
 const DOWNLOADED_TASKS_AMOUNT = 8;
@@ -13,7 +13,7 @@ const renderTasksList = (tasksContainer, tasks, onDataChange, onViewChange) => {
   return tasks.map((task) => {
     const taskController = new TaskController(tasksContainer, onDataChange, onViewChange);
 
-    taskController.render(task);
+    taskController.render(task, TaskControllerMode.DEFAULT);
 
     return taskController;
   });
@@ -48,6 +48,7 @@ export default class BoardController {
     this._sortComponent = new SortComponent();
     this._loadMoreComponent = new LoadMoreComponent();
     this._shownTasksAmount = DEFAULT_TASKS_AMOUNT;
+    this._createdTask = null;
     this._onSortTypeChange = this._onSortTypeChange.bind(this);
     this._sortComponent.setSortTypeChangeHandler(this._onSortTypeChange);
     this._onDataChange = this._onDataChange.bind(this);
@@ -57,11 +58,44 @@ export default class BoardController {
     this._onLoadMoreButtonClickHandler = this._onLoadMoreButtonClickHandler.bind(this);
   }
 
-  _onDataChange(taskController, oldData, newData) {
-    const isSuccess = this._tasksModel.updateTask(oldData.id, newData);
+  createTask() {
+    if (this._createdTask) {
+      return;
+    }
 
-    if (isSuccess) {
-      taskController.render(newData);
+    this._createdTask = new TaskController(this._taskListComponent.getElement(), this._onDataChange, this._onViewChange);
+    this._createdTask.render(emptyTask, TaskControllerMode.ADD);
+  }
+
+  _onDataChange(taskController, oldData, newData) {
+    if (oldData === emptyTask) {
+      this._createdTask = null;
+
+      if (newData === null) {
+        taskController.destroy();
+        this._updateTasks(this._shownTasksAmount);
+      } else {
+        this._tasksModel.addTask(newData);
+        taskController.render(newData, TaskControllerMode.DEFAULT);
+
+        if (this._shownTasksAmount % DEFAULT_TASKS_AMOUNT === 0) {
+          const destroyedTask = this._shownTaskControllers.pop();
+          destroyedTask.destroy();
+        }
+
+        this._shownTaskControllers = [].concat(taskController, this._shownTaskControllers);
+        this._shownTasksAmount = this._shownTaskControllers.length;
+        this._renderLoadMoreButton();
+      }
+    } else if (newData === null) {
+      this._tasksModel.removeTask(oldData.id);
+      this._updateTasks(this._shownTasksAmount);
+    } else {
+      const isSuccess = this._tasksModel.updateTask(oldData.id, newData);
+
+      if (isSuccess) {
+        taskController.render(newData, TaskControllerMode.DEFAULT);
+      }
     }
   }
 
