@@ -54,6 +54,7 @@ export default class BoardController {
     this._onViewChange = this._onViewChange.bind(this);
     this._onFilterChange = this._onFilterChange.bind(this);
     this._tasksModel.setFilterChangeHandlers(this._onFilterChange);
+    this._onLoadMoreButtonClickHandler = this._onLoadMoreButtonClickHandler.bind(this);
   }
 
   _onDataChange(taskController, oldData, newData) {
@@ -68,13 +69,25 @@ export default class BoardController {
     this._updateTasks(DEFAULT_TASKS_AMOUNT);
   }
 
+  _onLoadMoreButtonClickHandler() {
+    const previousTasksAmount = this._shownTasksAmount;
+    const tasks = this._tasksModel.getFiltredTasks();
+    this._shownTasksAmount += DOWNLOADED_TASKS_AMOUNT;
+
+    const sortedTasks = getSortedTasks(tasks, this._sortComponent.getSortType(), previousTasksAmount, this._shownTasksAmount);
+    const newTasks = renderTasksList(this._taskListComponent.getElement(), sortedTasks, this._onDataChange, this._onViewChange);
+    this._shownTaskControllers = this._shownTaskControllers.concat(newTasks);
+
+    if (this._shownTasksAmount >= this._tasksModel.getFiltredTasks().length) {
+      remove(this._loadMoreComponent);
+    }
+  }
+
   _onSortTypeChange(sortType) {
     const sortedTasks = getSortedTasks(this._tasksModel.getFiltredTasks(), sortType, 0, this._shownTasksAmount);
 
-    this._taskListComponent.getElement().innerHTML = ``;
-
-    const newTasks = renderTasksList(this._taskListComponent.getElement(), sortedTasks, this._onDataChange, this._onViewChange);
-    this._shownTaskControllers = this._shownTaskControllers.concat(newTasks);
+    this._removeTasks();
+    this._renderTasks(sortedTasks);
     this._renderLoadMoreButton();
   }
 
@@ -98,19 +111,7 @@ export default class BoardController {
 
     render(this._container.getElement(), this._loadMoreComponent);
 
-    this._loadMoreComponent.setClickHandler(() => {
-      const previousTasksAmount = this._shownTasksAmount;
-      const tasks = this._tasksModel.getFiltredTasks();
-      this._shownTasksAmount += DOWNLOADED_TASKS_AMOUNT;
-
-      const sortedTasks = getSortedTasks(tasks, this._sortComponent.getSortType(), previousTasksAmount, this._shownTasksAmount);
-      const newTasks = renderTasksList(this._taskListComponent.getElement(), sortedTasks, this._onDataChange, this._onViewChange);
-      this._shownTaskControllers = this._shownTaskControllers.concat(newTasks);
-
-      if (this._shownTasksAmount >= this._tasksModel.getFiltredTasks().length) {
-        remove(this._loadMoreComponent);
-      }
-    });
+    this._loadMoreComponent.setClickHandler(this._onLoadMoreButtonClickHandler);
   }
 
   render() {

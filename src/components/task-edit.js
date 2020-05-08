@@ -1,8 +1,7 @@
 import {COLORS, DAYS_OF_WEEK} from './../utils/const.js';
-import {formatDate, formatTime} from './../utils/common.js';
+import {formatDate, formatTime, isOverdueDate, isRepeating} from './../utils/common.js';
 import AbstractSmartComponent from './abstract-smart-component.js';
 import flatpickr from "flatpickr";
-
 import "flatpickr/dist/flatpickr.min.css";
 
 const createDaysTemplate = (days, repeatingDays) => {
@@ -49,15 +48,10 @@ const createColorsTemplate = (colors, currentColor) => {
     .join(`\n`);
 };
 
-const isRepeating = (repeatingDays) => {
-  return Object.values(repeatingDays).some(Boolean);
-};
-
 const createTaskEditTemplate = (task, options = {}) => {
   const {color, description, dueDate} = task;
   const {isDateShowing, isRepeatingTask, activeRepeatingDays} = options;
-
-  const isExpired = dueDate instanceof Date && dueDate < Date.now();
+  const isExpired = dueDate instanceof Date && isOverdueDate(dueDate, new Date());
   const deadlineClass = isExpired ? `card--deadline` : ``;
   const date = (isDateShowing && dueDate) ? formatDate(dueDate) : ``;
   const time = (isDateShowing && dueDate) ? formatTime(dueDate) : ``;
