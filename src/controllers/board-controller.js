@@ -39,9 +39,10 @@ const getSortedTasks = (tasks, sortType, from = 0, to = DEFAULT_TASKS_AMOUNT) =>
 };
 
 export default class BoardController {
-  constructor(container, tasksModel) {
+  constructor(container, tasksModel, siteMenuComponent) {
     this._container = container;
     this._tasksModel = tasksModel;
+    this._siteMenuComponent = siteMenuComponent;
     this._shownTaskControllers = [];
     this._noTaskComponent = new NoTaskComponent();
     this._taskListComponent = new TaskListComponent();
@@ -67,6 +68,10 @@ export default class BoardController {
     this._createdTask.render(emptyTask, TaskControllerMode.ADD);
   }
 
+  hide() {
+    this._container.hide();
+  }
+
   _onDataChange(taskController, oldData, newData) {
     if (oldData === emptyTask) {
       this._createdTask = null;
@@ -74,6 +79,7 @@ export default class BoardController {
       if (newData === null) {
         taskController.destroy();
         this._updateTasks(this._shownTasksAmount);
+        this._siteMenuComponent.resetActiveItem();
       } else {
         this._tasksModel.addTask(newData);
         taskController.render(newData, TaskControllerMode.DEFAULT);
@@ -169,6 +175,10 @@ export default class BoardController {
 
     this._shownTaskControllers = this._shownTaskControllers.concat(newTasks);
     this._shownTasksAmount = this._shownTaskControllers.length;
+  }
+
+  show() {
+    this._container.show();
   }
 
   _updateTasks(count) {

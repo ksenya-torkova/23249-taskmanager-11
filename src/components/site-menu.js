@@ -45,6 +45,14 @@ export default class SiteMenu extends AbstractComponent {
     return createSiteMenuTemplate();
   }
 
+  resetActiveItem() {
+    const menuItems = this.getElement().querySelectorAll(`input[type='radio']`);
+
+    [...menuItems].forEach((item) => {
+      item.checked = false;
+    });
+  }
+
   setActiveItem(menuItem) {
     const item = this.getElement().querySelector(`#${menuItem}`);
 
@@ -54,7 +62,7 @@ export default class SiteMenu extends AbstractComponent {
   }
 
   setOnChangeHandler(handler) {
-    this.getElement().addEventListener(`change`, (evt) => {
+    this.getElement().addEventListener(`click`, (evt) => {
       if (evt.target.tagName !== Tag.INPUT.toUpperCase()) {
         return;
       }
