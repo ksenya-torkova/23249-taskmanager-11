@@ -90,7 +90,7 @@ const createTaskEditTemplate = (task, options = {}) => {
   const repeatingStatus = isRepeatingTask ? `yes` : `no`;
   const daysMarkup = createDaysTemplate(DAYS_OF_WEEK, activeRepeatingDays);
   const colorsMarkup = createColorsTemplate(COLORS, color);
-  const isSaveButtonShown = (isDateShowing && isRepeatingTask) || (isRepeatingTask && !isRepeating(activeRepeatingDays)) || !isAllowableDescriptionLength(description);
+  const isSaveButtonShown = (isDateShowing && isRepeatingTask) || (isRepeatingTask && !isRepeating(activeRepeatingDays)) || !isAllowableDescriptionLength(currentDescription);
 
   return (
     `<article class="card card--edit card--${color} ${repeatClass} ${deadlineClass}">
