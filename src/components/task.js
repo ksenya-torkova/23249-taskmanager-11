@@ -1,5 +1,5 @@
-import {formatDate, formatTime, isOverdueDate} from './../utils/common.js';
-import AbstractComponent from './abstract-component.js';
+import {formatDate, formatTime, isOverdueDate} from './../utils/common';
+import AbstractComponent from './abstract-component';
 import {encode} from "he";
 
 const createTaskTemplate = (task) => {
@@ -68,12 +68,12 @@ export default class Task extends AbstractComponent {
     return createTaskTemplate(this._task);
   }
 
-  setEditButtonClickHandler(handler) {
-    this.getElement().querySelector(`.card__btn--edit`).addEventListener(`click`, handler);
-  }
-
   setArchiveButtonClickHandler(handler) {
     this.getElement().querySelector(`.card__btn--archive`).addEventListener(`click`, handler);
+  }
+
+  setEditButtonClickHandler(handler) {
+    this.getElement().querySelector(`.card__btn--edit`).addEventListener(`click`, handler);
   }
 
   setFavoritesButtonClickHandler(handler) {

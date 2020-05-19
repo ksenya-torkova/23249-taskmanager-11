@@ -1,5 +1,5 @@
-import AbstractSmartComponent from "./abstract-smart-component.js";
-import {isOneDay} from "../utils/common.js";
+import AbstractSmartComponent from './abstract-smart-component';
+import {isOneDay} from '../utils/common';
 import Chart from "chart.js";
 import ChartDataLabels from 'chartjs-plugin-datalabels';
 import moment from "moment";
@@ -11,6 +11,25 @@ const colorToHex = {
   green: `#31b55c`,
   pink: `#ff3cb9`,
   yellow: `#ffe125`,
+};
+
+const calcUniqCountColor = (tasks, color) => {
+  return tasks.filter((it) => it.color === color).length;
+};
+
+
+const calculateBetweenDates = (from, to) => {
+  const result = [];
+  let date = new Date(from);
+
+  while (date <= to) {
+    result.push(date);
+
+    date = new Date(date);
+    date.setDate(date.getDate() + 1);
+  }
+
+  return result;
 };
 
 const getUniqItems = (item, index, array) => {
@@ -31,24 +50,6 @@ const createPlaceholder = (dateFrom, dateTo) => {
   };
 
   return `${format(dateFrom)} - ${format(dateTo)}`;
-};
-
-const calcUniqCountColor = (tasks, color) => {
-  return tasks.filter((it) => it.color === color).length;
-};
-
-const calculateBetweenDates = (from, to) => {
-  const result = [];
-  let date = new Date(from);
-
-  while (date <= to) {
-    result.push(date);
-
-    date = new Date(date);
-    date.setDate(date.getDate() + 1);
-  }
-
-  return result;
 };
 
 const renderColorsChart = (colorsCtx, tasks) => {

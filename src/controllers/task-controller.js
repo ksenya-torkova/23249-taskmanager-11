@@ -1,8 +1,8 @@
-import {checkEscKey} from './../utils/common.js';
-import {COLOR} from './../utils/const.js';
-import {render, RenderPosition, replace, remove} from './../utils/render.js';
-import TaskComponent from './../components/task.js';
-import TaskEditComponent from './../components/task-edit.js';
+import {checkEscKey} from './../utils/common';
+import {COLOR} from './../utils/const';
+import {render, RenderPosition, replace, remove} from './../utils/render';
+import TaskComponent from './../components/task';
+import TaskEditComponent from './../components/task-edit';
 
 const Mode = {
   ADD: `add`,

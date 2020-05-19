@@ -1,41 +1,29 @@
-import {render} from './utils/render.js';
-import {generateTasksList} from './mock/task-mock.js';
+import {dateFrom, dateTo} from './utils/common';
+import {render} from './utils/render';
+import {generateTasksList} from './mock/task-mock';
 import BoardComponent from './components/board.js';
-import BoardController from './controllers/board-controller.js';
-import FilterController from './controllers/filter-controller.js';
-import SiteMenuComponent, {MenuItem} from './components/site-menu.js';
-import StatisticsComponent from "./components/statistics.js";
-import TasksModel from './models/tasks-model.js';
+import BoardController from './controllers/board-controller';
+import FilterController from './controllers/filter-controller';
+import SiteMenuComponent, {MenuItem} from './components/site-menu';
+import StatisticsComponent from './components/statistics';
+import TasksModel from './models/tasks-model';
 
 const TASK_COUNT = 20;
 const siteMain = document.querySelector(`.main`);
 const siteHeader = siteMain.querySelector(`.main__control`);
-
 const tasks = generateTasksList(TASK_COUNT);
 const tasksModel = new TasksModel();
-tasksModel.setTasks(tasks);
-
-const filterController = new FilterController(siteMain, tasksModel);
-filterController.render();
-
 const boardComponent = new BoardComponent();
 const siteMenuComponent = new SiteMenuComponent();
 const boardController = new BoardController(boardComponent, tasksModel, siteMenuComponent);
+const filterController = new FilterController(siteMain, tasksModel);
+const statisticsComponent = new StatisticsComponent({tasks: tasksModel, dateFrom, dateTo});
 
+tasksModel.setTasks(tasks);
+filterController.render();
 render(siteMain, boardComponent);
 boardController.render();
 render(siteHeader, siteMenuComponent);
-
-const dateTo = new Date();
-
-const dateFrom = (() => {
-  const d = new Date(dateTo);
-  d.setDate(d.getDate() - 7);
-  return d;
-})();
-
-const statisticsComponent = new StatisticsComponent({tasks: tasksModel, dateFrom, dateTo});
-
 render(siteMain, statisticsComponent);
 statisticsComponent.hide();
 
@@ -48,10 +36,12 @@ siteMenuComponent.setOnChangeHandler((menuItem) => {
       boardController.createTask();
       boardController._onViewChange();
       break;
+
     case MenuItem.STATISTICS:
       boardController.hide();
       statisticsComponent.show();
       break;
+
     case MenuItem.TASKS:
       statisticsComponent.hide();
       boardController.show();

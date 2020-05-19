@@ -1,4 +1,4 @@
-import {createElement} from './../utils/render.js';
+import {createElement} from './../utils/render';
 
 const HIDING_CLASS = `visually-hidden`;
 
@@ -11,16 +11,16 @@ export default class AbstractComponent {
     this._element = null;
   }
 
-  getTemplate() {
-    throw new Error(`абстрактный метод getTemplate не перегружен`);
-  }
-
   getElement() {
     if (!this._element) {
       this._element = createElement(this.getTemplate());
     }
 
     return this._element;
+  }
+
+  getTemplate() {
+    throw new Error(`абстрактный метод getTemplate не перегружен`);
   }
 
   hide() {

@@ -1,10 +1,10 @@
-import {SortType} from './../utils/const.js';
-import {remove, render} from './../utils/render.js';
-import TaskListComponent from './../components/task-list.js';
-import LoadMoreComponent from './../components/load-more.js';
-import NoTaskComponent from './../components/no-tasks.js';
-import SortComponent from './../components/sort.js';
-import TaskController, {emptyTask, Mode as TaskControllerMode} from './task-controller.js';
+import {SortType} from './../utils/const';
+import {remove, render} from './../utils/render';
+import TaskListComponent from './../components/task-list';
+import LoadMoreComponent from './../components/load-more';
+import NoTaskComponent from './../components/no-tasks';
+import SortComponent from './../components/sort';
+import TaskController, {emptyTask, Mode as TaskControllerMode} from './task-controller';
 
 const DEFAULT_TASKS_AMOUNT = 8;
 const DOWNLOADED_TASKS_AMOUNT = 8;

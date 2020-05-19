@@ -1,4 +1,4 @@
-import {COLORS, DAYS_OF_WEEK} from './../utils/const.js';
+import {COLORS, DAYS_OF_WEEK} from './../utils/const';
 
 const REAPITING_DAYS = {
   mo: false,

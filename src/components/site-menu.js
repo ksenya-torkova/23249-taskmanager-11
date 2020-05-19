@@ -1,5 +1,5 @@
-import {Tag} from './../utils/const.js';
-import AbstractComponent from './abstract-component.js';
+import {Tag} from './../utils/const';
+import AbstractComponent from './abstract-component';
 
 const MenuItem = {
   NEW_TASK: `control__new-task`,
