@@ -9,6 +9,22 @@ export default class Task {
     this.repeatingDays = data[`repeating_days`];
   }
 
+  toRAW() {
+    return {
+      "color": this.color,
+      "description": this.description,
+      "due_date": this.dueDate,
+      "id": this.id,
+      "is_archived": this.isArchive,
+      "is_favorite": this.isFavorite,
+      "repeating_days": this.repeatingDays,
+    };
+  }
+
+  static clone(data) {
+    return new Task(data.toRAW());
+  }
+
   static parseTask(data) {
     return new Task(data);
   }

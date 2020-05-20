@@ -58,25 +58,6 @@ const isAllowableDescriptionLength = (description) => {
   return length >= MIN_DESCRIPTION_LENGTH && length <= MAX_DESCRIPTION_LENGTH;
 };
 
-const parseFormData = (formData) => {
-  const repeatingDays = DAYS_OF_WEEK.reduce((acc, day) => {
-    acc[day] = false;
-    return acc;
-  }, {});
-
-  const date = formData.get(`date`);
-
-  return {
-    description: formData.get(`text`),
-    color: formData.get(`color`),
-    dueDate: date ? new Date(date) : null,
-    repeatingDays: formData.getAll(`repeat`).reduce((acc, it) => {
-      acc[it] = true;
-      return acc;
-    }, repeatingDays),
-  };
-};
-
 const createTaskEditTemplate = (task, options = {}) => {
   const {color, dueDate} = task;
   const {activeRepeatingDays, currentDescription, isDateShowing, isRepeatingTask} = options;
@@ -194,9 +175,8 @@ export default class TaskEdit extends AbstractSmartComponent {
 
   getFormData() {
     const form = this.getElement().querySelector(`.card__form`);
-    const formData = new FormData(form);
 
-    return parseFormData(formData);
+    return new FormData(form);
   }
 
   getTemplate() {

@@ -8,7 +8,7 @@ import SiteMenuComponent, {MenuItem} from './components/site-menu';
 import StatisticsComponent from './components/statistics';
 import TasksModel from './models/tasks-model';
 
-const AUTHORIZATION = `Basic dslkewjhWE345ir`;
+const AUTHORIZATION = `Basic dslkewjhWE345i33r`;
 const siteMain = document.querySelector(`.main`);
 const siteHeader = siteMain.querySelector(`.main__control`);
 const api = new API(AUTHORIZATION);
