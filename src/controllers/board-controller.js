@@ -39,7 +39,7 @@ const getSortedTasks = (tasks, sortType, from = 0, to = DEFAULT_TASKS_AMOUNT) =>
 };
 
 export default class BoardController {
-  constructor(container, tasksModel, siteMenuComponent) {
+  constructor(container, tasksModel, siteMenuComponent, api) {
     this._container = container;
     this._tasksModel = tasksModel;
     this._siteMenuComponent = siteMenuComponent;
@@ -57,6 +57,7 @@ export default class BoardController {
     this._onFilterChange = this._onFilterChange.bind(this);
     this._tasksModel.setFilterChangeHandlers(this._onFilterChange);
     this._onLoadMoreButtonClickHandler = this._onLoadMoreButtonClickHandler.bind(this);
+    this._api = api;
   }
 
   createTask() {
@@ -97,11 +98,15 @@ export default class BoardController {
       this._tasksModel.removeTask(oldData.id);
       this._updateTasks(this._shownTasksAmount);
     } else {
-      const isSuccess = this._tasksModel.updateTask(oldData.id, newData);
+      this._api.updateTask(oldData.id, newData)
+        .then((taskModel) => {
+          const isSuccess = this._tasksModel.updateTask(oldData.id, taskModel);
 
-      if (isSuccess) {
-        taskController.render(newData, TaskControllerMode.DEFAULT);
-      }
+          if (isSuccess) {
+            taskController.render(taskModel, TaskControllerMode.DEFAULT);
+            this._updateTasks(this._shownTasksAmount);
+          }
+        });
     }
   }
 

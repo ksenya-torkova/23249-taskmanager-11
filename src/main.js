@@ -15,7 +15,7 @@ const api = new API(AUTHORIZATION);
 const tasksModel = new TasksModel();
 const boardComponent = new BoardComponent();
 const siteMenuComponent = new SiteMenuComponent();
-const boardController = new BoardController(boardComponent, tasksModel, siteMenuComponent);
+const boardController = new BoardController(boardComponent, tasksModel, siteMenuComponent, api);
 const filterController = new FilterController(siteMain, tasksModel);
 const statisticsComponent = new StatisticsComponent({tasks: tasksModel, dateFrom, dateTo});
 
