@@ -1,10 +1,10 @@
-import {SortType} from './../utils/const.js';
-import {remove, render} from './../utils/render.js';
-import TaskListComponent from './../components/task-list.js';
-import LoadMoreComponent from './../components/load-more.js';
-import NoTaskComponent from './../components/no-tasks.js';
-import SortComponent from './../components/sort.js';
-import TaskController, {emptyTask, Mode as TaskControllerMode} from './task-controller.js';
+import {SortType} from './../utils/const';
+import {remove, render} from './../utils/render';
+import TaskListComponent from './../components/task-list';
+import LoadMoreComponent from './../components/load-more';
+import NoTaskComponent from './../components/no-tasks';
+import SortComponent from './../components/sort';
+import TaskController, {emptyTask, Mode as TaskControllerMode} from './task-controller';
 
 const DEFAULT_TASKS_AMOUNT = 8;
 const DOWNLOADED_TASKS_AMOUNT = 8;
@@ -39,7 +39,7 @@ const getSortedTasks = (tasks, sortType, from = 0, to = DEFAULT_TASKS_AMOUNT) =>
 };
 
 export default class BoardController {
-  constructor(container, tasksModel, siteMenuComponent) {
+  constructor(container, tasksModel, siteMenuComponent, api) {
     this._container = container;
     this._tasksModel = tasksModel;
     this._siteMenuComponent = siteMenuComponent;
@@ -57,6 +57,7 @@ export default class BoardController {
     this._onFilterChange = this._onFilterChange.bind(this);
     this._tasksModel.setFilterChangeHandlers(this._onFilterChange);
     this._onLoadMoreButtonClickHandler = this._onLoadMoreButtonClickHandler.bind(this);
+    this._api = api;
   }
 
   createTask() {
@@ -97,11 +98,15 @@ export default class BoardController {
       this._tasksModel.removeTask(oldData.id);
       this._updateTasks(this._shownTasksAmount);
     } else {
-      const isSuccess = this._tasksModel.updateTask(oldData.id, newData);
+      this._api.updateTask(oldData.id, newData)
+        .then((taskModel) => {
+          const isSuccess = this._tasksModel.updateTask(oldData.id, taskModel);
 
-      if (isSuccess) {
-        taskController.render(newData, TaskControllerMode.DEFAULT);
-      }
+          if (isSuccess) {
+            taskController.render(taskModel, TaskControllerMode.DEFAULT);
+            this._updateTasks(this._shownTasksAmount);
+          }
+        });
     }
   }
 

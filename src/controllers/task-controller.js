@@ -1,8 +1,9 @@
-import {checkEscKey} from './../utils/common.js';
-import {COLOR} from './../utils/const.js';
-import {render, RenderPosition, replace, remove} from './../utils/render.js';
-import TaskComponent from './../components/task.js';
-import TaskEditComponent from './../components/task-edit.js';
+import {checkEscKey} from './../utils/common';
+import {COLOR, DAYS_OF_WEEK} from './../utils/const';
+import {render, RenderPosition, replace, remove} from './../utils/render';
+import TaskComponent from './../components/task';
+import TaskEditComponent from './../components/task-edit';
+import TaskModel from './../models/task-model';
 
 const Mode = {
   ADD: `add`,
@@ -25,6 +26,27 @@ const emptyTask = {
   color: COLOR.BLACK,
   isFavorite: false,
   isArchive: false,
+};
+
+const parseFormData = (formData) => {
+  const date = formData.get(`date`);
+
+  const repeatingDays = DAYS_OF_WEEK.reduce((acc, day) => {
+    acc[day] = false;
+    return acc;
+  }, {});
+
+  return new TaskModel({
+    "color": formData.get(`color`),
+    "description": formData.get(`text`),
+    "due_date": date ? new Date(date) : null,
+    "is_done": false,
+    "is_favorite": false,
+    "repeating_days": formData.getAll(`repeat`).reduce((acc, it) => {
+      acc[it] = true;
+      return acc;
+    }, repeatingDays),
+  });
 };
 
 export default class TaskController {
@@ -79,9 +101,10 @@ export default class TaskController {
     this._taskEditComponent = new TaskEditComponent(task);
 
     this._taskComponent.setArchiveButtonClickHandler(() => {
-      this._onDataChange(task, Object.assign({}, task, {
-        isArchive: !task.isArchive,
-      }));
+      const newTask = TaskModel.clone(task);
+      newTask.isArchive = !newTask.isArchive;
+
+      this._onDataChange(this, task, newTask);
     });
 
     this._taskComponent.setEditButtonClickHandler(() => {
@@ -90,15 +113,19 @@ export default class TaskController {
     });
 
     this._taskComponent.setFavoritesButtonClickHandler(() => {
-      this._onDataChange(task, Object.assign({}, task, {
-        isFavorite: !task.isFavorite,
-      }));
+      const newTask = TaskModel.clone(task);
+      newTask.isFavorite = !newTask.isFavorite;
+
+      this._onDataChange(this, task, newTask);
     });
 
     this._taskEditComponent.setSubmitHandler((evt) => {
       evt.preventDefault();
-      this._replaceEditToTask();
-      document.removeEventListener(`keydown`, this._onEscKeyDown);
+
+      const formData = this._taskEditComponent.getFormData();
+      const data = parseFormData(formData);
+
+      this._onDataChange(this, task, data);
     });
 
     this._taskEditComponent.setDeleteButtonClickHandler(() => {

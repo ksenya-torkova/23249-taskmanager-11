@@ -1,17 +1,33 @@
-import {COLORS, DAYS_OF_WEEK} from './../utils/const.js';
-import {formatDate, formatTime, isOverdueDate, isRepeating} from './../utils/common.js';
-import AbstractSmartComponent from './abstract-smart-component.js';
+import {COLORS, DAYS_OF_WEEK} from './../utils/const';
+import {formatDate, formatTime, isOverdueDate, isRepeating} from './../utils/common';
+import AbstractSmartComponent from './abstract-smart-component';
 import flatpickr from "flatpickr";
 import {encode} from "he";
 import "flatpickr/dist/flatpickr.min.css";
 
-const MIN_DESCRIPTION_LENGTH = 1;
 const MAX_DESCRIPTION_LENGTH = 140;
+const MIN_DESCRIPTION_LENGTH = 1;
 
-const isAllowableDescriptionLength = (description) => {
-  const length = description.length;
-
-  return length >= MIN_DESCRIPTION_LENGTH && length <= MAX_DESCRIPTION_LENGTH;
+const createColorsTemplate = (colors, currentColor) => {
+  return colors
+    .map((color, index) => {
+      return (
+        `<input
+          type="radio"
+          id="color-${color}-${index}"
+          class="card__color-input card__color-input--${color} visually-hidden"
+          name="color"
+          value="${color}"
+          ${currentColor === color ? `checked` : ``}
+        />
+        <label
+          for="color-${color}-${index}"
+          class="card__color card__color--${color}"
+          >${color}</label
+        >`
+      );
+    })
+    .join(`\n`);
 };
 
 const createDaysTemplate = (days, repeatingDays) => {
@@ -36,45 +52,10 @@ const createDaysTemplate = (days, repeatingDays) => {
     .join(`\n`);
 };
 
-const createColorsTemplate = (colors, currentColor) => {
-  return colors
-    .map((color, index) => {
-      return (
-        `<input
-          type="radio"
-          id="color-${color}-${index}"
-          class="card__color-input card__color-input--${color} visually-hidden"
-          name="color"
-          value="${color}"
-          ${currentColor === color ? `checked` : ``}
-        />
-        <label
-          for="color-${color}-${index}"
-          class="card__color card__color--${color}"
-          >${color}</label
-        >`
-      );
-    })
-    .join(`\n`);
-};
+const isAllowableDescriptionLength = (description) => {
+  const length = description.length;
 
-const parseFormData = (formData) => {
-  const repeatingDays = DAYS_OF_WEEK.reduce((acc, day) => {
-    acc[day] = false;
-    return acc;
-  }, {});
-
-  const date = formData.get(`date`);
-
-  return {
-    description: formData.get(`text`),
-    color: formData.get(`color`),
-    dueDate: date ? new Date(date) : null,
-    repeatingDays: formData.getAll(`repeat`).reduce((acc, it) => {
-      acc[it] = true;
-      return acc;
-    }, repeatingDays),
-  };
+  return length >= MIN_DESCRIPTION_LENGTH && length <= MAX_DESCRIPTION_LENGTH;
 };
 
 const createTaskEditTemplate = (task, options = {}) => {
@@ -90,7 +71,7 @@ const createTaskEditTemplate = (task, options = {}) => {
   const repeatingStatus = isRepeatingTask ? `yes` : `no`;
   const daysMarkup = createDaysTemplate(DAYS_OF_WEEK, activeRepeatingDays);
   const colorsMarkup = createColorsTemplate(COLORS, color);
-  const isSaveButtonShown = (isDateShowing && isRepeatingTask) || (isRepeatingTask && !isRepeating(activeRepeatingDays)) || !isAllowableDescriptionLength(description);
+  const isSaveButtonShown = (isDateShowing && isRepeatingTask) || (isRepeatingTask && !isRepeating(activeRepeatingDays)) || !isAllowableDescriptionLength(currentDescription);
 
   return (
     `<article class="card card--edit card--${color} ${repeatClass} ${deadlineClass}">
@@ -194,9 +175,8 @@ export default class TaskEdit extends AbstractSmartComponent {
 
   getFormData() {
     const form = this.getElement().querySelector(`.card__form`);
-    const formData = new FormData(form);
 
-    return parseFormData(formData);
+    return new FormData(form);
   }
 
   getTemplate() {

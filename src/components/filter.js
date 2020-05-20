@@ -1,10 +1,6 @@
-import AbstractComponent from './abstract-component.js';
+import AbstractComponent from './abstract-component';
 
 const FILTER_ID_PREFIX = `filter__`;
-
-const getFilterNameById = (id) => {
-  return id.substring(FILTER_ID_PREFIX.length);
-};
 
 const createFilterMarkup = (filter, checked) => {
   const {name, count} = filter;
@@ -40,6 +36,10 @@ const createFilterTemplate = (filters) => {
       ${filtersMarkup}
     </section>`
   );
+};
+
+const getFilterNameById = (id) => {
+  return id.substring(FILTER_ID_PREFIX.length);
 };
 
 export default class Filter extends AbstractComponent {

@@ -1,41 +1,28 @@
-import {render} from './utils/render.js';
-import {generateTasksList} from './mock/task-mock.js';
+import {dateFrom, dateTo} from './utils/common';
+import {render} from './utils/render';
+import API from './api';
 import BoardComponent from './components/board.js';
-import BoardController from './controllers/board-controller.js';
-import FilterController from './controllers/filter-controller.js';
-import SiteMenuComponent, {MenuItem} from './components/site-menu.js';
-import StatisticsComponent from "./components/statistics.js";
-import TasksModel from './models/tasks-model.js';
+import BoardController from './controllers/board-controller';
+import FilterController from './controllers/filter-controller';
+import SiteMenuComponent, {MenuItem} from './components/site-menu';
+import StatisticsComponent from './components/statistics';
+import TasksModel from './models/tasks-model';
 
-const TASK_COUNT = 20;
+const AUTHORIZATION = `Basic dslkewjhWE345i33r`;
+const END_POINT = `https://11.ecmascript.pages.academy/task-manager`;
 const siteMain = document.querySelector(`.main`);
 const siteHeader = siteMain.querySelector(`.main__control`);
-
-const tasks = generateTasksList(TASK_COUNT);
+const api = new API(AUTHORIZATION, END_POINT);
 const tasksModel = new TasksModel();
-tasksModel.setTasks(tasks);
-
-const filterController = new FilterController(siteMain, tasksModel);
-filterController.render();
-
 const boardComponent = new BoardComponent();
 const siteMenuComponent = new SiteMenuComponent();
-const boardController = new BoardController(boardComponent, tasksModel, siteMenuComponent);
-
-render(siteMain, boardComponent);
-boardController.render();
-render(siteHeader, siteMenuComponent);
-
-const dateTo = new Date();
-
-const dateFrom = (() => {
-  const d = new Date(dateTo);
-  d.setDate(d.getDate() - 7);
-  return d;
-})();
-
+const boardController = new BoardController(boardComponent, tasksModel, siteMenuComponent, api);
+const filterController = new FilterController(siteMain, tasksModel);
 const statisticsComponent = new StatisticsComponent({tasks: tasksModel, dateFrom, dateTo});
 
+filterController.render();
+render(siteMain, boardComponent);
+render(siteHeader, siteMenuComponent);
 render(siteMain, statisticsComponent);
 statisticsComponent.hide();
 
@@ -48,13 +35,21 @@ siteMenuComponent.setOnChangeHandler((menuItem) => {
       boardController.createTask();
       boardController._onViewChange();
       break;
+
     case MenuItem.STATISTICS:
       boardController.hide();
       statisticsComponent.show();
       break;
+
     case MenuItem.TASKS:
       statisticsComponent.hide();
       boardController.show();
       break;
   }
 });
+
+api.getTasks()
+  .then((tasks) => {
+    tasksModel.setTasks(tasks);
+    boardController.render();
+  });

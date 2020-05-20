@@ -1,5 +1,5 @@
-import {FilterType} from "./../utils/const.js";
-import {getTasksByFilter} from './../utils/filter.js';
+import {FilterType} from './../utils/const';
+import {getTasksByFilter} from './../utils/filter';
 
 export default class Task {
   constructor() {
@@ -29,7 +29,7 @@ export default class Task {
   removeTask(id) {
     const index = this._tasks.findIndex((it) => it.id === id);
 
-    if (index !== -1) {
+    if (index === -1) {
       return false;
     }
 
@@ -60,7 +60,7 @@ export default class Task {
   updateTask(id, task) {
     const index = this._tasks.findIndex((it) => it.id === id);
 
-    if (index !== -1) {
+    if (index === -1) {
       return false;
     }
 
