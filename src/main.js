@@ -9,9 +9,10 @@ import StatisticsComponent from './components/statistics';
 import TasksModel from './models/tasks-model';
 
 const AUTHORIZATION = `Basic dslkewjhWE345i33r`;
+const END_POINT = `https://11.ecmascript.pages.academy/task-manager`;
 const siteMain = document.querySelector(`.main`);
 const siteHeader = siteMain.querySelector(`.main__control`);
-const api = new API(AUTHORIZATION);
+const api = new API(AUTHORIZATION, END_POINT);
 const tasksModel = new TasksModel();
 const boardComponent = new BoardComponent();
 const siteMenuComponent = new SiteMenuComponent();

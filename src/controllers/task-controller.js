@@ -126,9 +126,6 @@ export default class TaskController {
       const data = parseFormData(formData);
 
       this._onDataChange(this, task, data);
-
-      // this._replaceEditToTask();
-      // document.removeEventListener(`keydown`, this._onEscKeyDown);
     });
 
     this._taskEditComponent.setDeleteButtonClickHandler(() => {
