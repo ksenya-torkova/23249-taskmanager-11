@@ -82,21 +82,33 @@ export default class BoardController {
         this._updateTasks(this._shownTasksAmount);
         this._siteMenuComponent.resetActiveItem();
       } else {
-        this._tasksModel.addTask(newData);
-        taskController.render(newData, TaskControllerMode.DEFAULT);
+        this._api.createTask(newData)
+          .then((taskModel) => {
+            this._tasksModel.addTask(taskModel);
+            taskController.render(taskModel, TaskControllerMode.DEFAULT);
 
-        if (this._shownTasksAmount % DEFAULT_TASKS_AMOUNT === 0) {
-          const destroyedTask = this._shownTaskControllers.pop();
-          destroyedTask.destroy();
-        }
+            if (this._shownTasksAmount % DEFAULT_TASKS_AMOUNT === 0) {
+              const destroyedTask = this._shownTaskControllers.pop();
+              destroyedTask.destroy();
+            }
 
-        this._shownTaskControllers = [].concat(taskController, this._shownTaskControllers);
-        this._shownTasksAmount = this._shownTaskControllers.length;
-        this._renderLoadMoreButton();
+            this._shownTaskControllers = [].concat(taskController, this._shownTaskControllers);
+            this._shownTasksAmount = this._shownTaskControllers.length;
+            this._renderLoadMoreButton();
+          })
+          .catch(() => {
+            taskController.shake();
+          });
       }
     } else if (newData === null) {
-      this._tasksModel.removeTask(oldData.id);
-      this._updateTasks(this._shownTasksAmount);
+      this._api.deleteTask(oldData.id)
+        .then(() => {
+          this._tasksModel.removeTask(oldData.id);
+          this._updateTasks(this._shownTasksAmount);
+        })
+        .catch(() => {
+          taskController.shake();
+        });
     } else {
       this._api.updateTask(oldData.id, newData)
         .then((taskModel) => {
@@ -106,6 +118,9 @@ export default class BoardController {
             taskController.render(taskModel, TaskControllerMode.DEFAULT);
             this._updateTasks(this._shownTasksAmount);
           }
+        })
+        .catch(() => {
+          taskController.shake();
         });
     }
   }
