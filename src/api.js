@@ -32,6 +32,13 @@ const API = class {
       .then(Task.parseTask);
   }
 
+  deleteTask(id) {
+    return this._load({
+      url: `tasks/${id}`,
+      method: Method.DELETE,
+    });
+  }
+
   getTasks() {
     return this._load({
       url: `tasks`,
