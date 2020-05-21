@@ -5,6 +5,8 @@ import TaskComponent from './../components/task';
 import TaskEditComponent from './../components/task-edit';
 import TaskModel from './../models/task-model';
 
+const SHAKE_ANIMATION_TIMEOUT = 600;
+
 const Mode = {
   ADD: `add`,
   DEFAULT: `default`,
@@ -125,10 +127,18 @@ export default class TaskController {
       const formData = this._taskEditComponent.getFormData();
       const data = parseFormData(formData);
 
+      this._taskEditComponent.setButtonsData({
+        saveButtonText: `Saving...`,
+      });
+
       this._onDataChange(this, task, data);
     });
 
     this._taskEditComponent.setDeleteButtonClickHandler(() => {
+      this._taskEditComponent.setButtonsData({
+        deleteButtonText: `Deleting...`,
+      });
+
       this._onDataChange(this, task, null);
     });
 
@@ -159,6 +169,22 @@ export default class TaskController {
     if (this._mode !== Mode.DEFAULT) {
       this._replaceEditToTask();
     }
+  }
+
+  shake() {
+    this._taskComponent.getElement().style.animation = `shake ${SHAKE_ANIMATION_TIMEOUT / 1000}s`;
+    this._taskEditComponent.getElement().style.animation = `shake ${SHAKE_ANIMATION_TIMEOUT / 1000}s`;
+
+    setTimeout(() => {
+      this._taskComponent.getElement().style.animation = ``;
+      this._taskEditComponent.getElement().style.animation = ``;
+
+      this._taskEditComponent.setButtonsData({
+        deleteButtonText: `Delete`,
+        saveButtonText: `Save`,
+      });
+
+    }, SHAKE_ANIMATION_TIMEOUT);
   }
 }
 
