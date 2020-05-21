@@ -76,9 +76,7 @@ const createTaskEditTemplate = (task, options = {}) => {
   const repeatingStatus = isRepeatingTask ? `yes` : `no`;
   const daysMarkup = createDaysTemplate(DAYS_OF_WEEK, activeRepeatingDays);
   const colorsMarkup = createColorsTemplate(COLORS, color);
-  const isSaveButtonShown = (isDateShowing && isRepeatingTask)
-    || (isDateShowing && !isRepeatingTask)
-    || (isRepeatingTask && !isRepeating(activeRepeatingDays))
+  const isSaveButtonShown = (isRepeatingTask && !isRepeating(activeRepeatingDays))
     || !isAllowableDescriptionLength(currentDescription);
   const deleteButtonText = externalData.deleteButtonText;
   const saveButtonText = externalData.saveButtonText;
@@ -164,10 +162,10 @@ export default class TaskEdit extends AbstractSmartComponent {
     this._currentDescription = task.description;
     this._externalData = DefaultData;
     this._subscribeOnEvents();
-    this._applyFlapickr();
+    this._applyFlatpickr();
   }
 
-  _applyFlapickr() {
+  _applyFlatpickr() {
     if (this._flatpickr) {
       this._flatpickr.destroy();
       this._flatpickr = null;
@@ -217,7 +215,7 @@ export default class TaskEdit extends AbstractSmartComponent {
 
   rerender() {
     super.rerender();
-    this._applyFlapickr();
+    this._applyFlatpickr();
   }
 
   reset() {
