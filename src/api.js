@@ -21,6 +21,17 @@ const API = class {
     this._endPoint = endPoint;
   }
 
+  createTask(task) {
+    return this._load({
+      url: `tasks`,
+      method: Method.POST,
+      body: JSON.stringify(task.toRAW()),
+      headers: new Headers({"Content-Type": `application/json`})
+    })
+      .then((response) => response.json())
+      .then(Task.parseTask);
+  }
+
   getTasks() {
     return this._load({
       url: `tasks`,

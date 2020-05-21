@@ -40,7 +40,7 @@ const parseFormData = (formData) => {
     "color": formData.get(`color`),
     "description": formData.get(`text`),
     "due_date": date ? new Date(date) : null,
-    "is_done": false,
+    "is_archived": false,
     "is_favorite": false,
     "repeating_days": formData.getAll(`repeat`).reduce((acc, it) => {
       acc[it] = true;
