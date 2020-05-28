@@ -1,4 +1,4 @@
-import Task from './models/task-model';
+import Task from './../models/task-model';
 
 const Method = {
   DELETE: `DELETE`,
@@ -28,8 +28,9 @@ const API = class {
       body: JSON.stringify(task.toRAW()),
       headers: new Headers({"Content-Type": `application/json`})
     })
-      .then((response) => response.json())
-      .then(Task.parseTask);
+
+    .then((response) => response.json())
+    .then(Task.parseTask);
   }
 
   deleteTask(id) {
@@ -56,6 +57,17 @@ const API = class {
       .catch((error) => {
         throw error;
       });
+  }
+
+  sync(data) {
+    return this._load({
+      url: `tasks/sync`,
+      method: Method.POST,
+      body: JSON.stringify(data),
+      headers: new Headers({"Content-Type": `application/json`})
+    })
+
+    .then((response) => response.json());
   }
 
   updateTask(id, data) {
